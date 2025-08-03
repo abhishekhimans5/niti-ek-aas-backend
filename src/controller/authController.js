@@ -20,6 +20,7 @@ export const login = async(req,res) => {
 
 export const register = async(req,res) => {
     const user = req.body;
+    console.log(user);
     const result = await createUser(user);
 
     if(result.error){

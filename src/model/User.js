@@ -107,7 +107,26 @@ const UserSchema = new mongoose.Schema({
     isVerified : {
         type : Boolean,
         default : false
-    }
+    },
+    followers : {
+        count : {
+            type : Number,
+        },
+        idFollowers : {
+            type : [mongoose.Schema.Types.ObjectId],
+            required : false
+        }
+    },
+    following : {
+        count : {
+            type : Number,
+        },
+        idFollowing : {
+            type : [mongoose.Schema.Types.ObjectId],
+            required : false
+        }
+    },
+
 
 })
 

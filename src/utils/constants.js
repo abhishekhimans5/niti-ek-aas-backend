@@ -7,3 +7,5 @@ export const STATUS_CODE = {
     ok : 200,
     created : 201
 }
+
+export const SUGGESTION_LIMIT = 50;

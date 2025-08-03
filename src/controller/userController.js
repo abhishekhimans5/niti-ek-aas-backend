@@ -1,3 +1,4 @@
+import { getProfilesForSuggestion } from "../api/getProfilesForSuggestion.js";
 import { getUserInfo } from "../services/userService.js"
 
 export const userProfile = async(req,res) => {
@@ -12,4 +13,10 @@ export const userProfile = async(req,res) => {
     } catch (error) {
         res.error('something went wrong',error)
     }
+}
+export const profileSuggestion = async(req,res) => {
+    const {userId,userEmail} = req;
+    const result = await getProfilesForSuggestion(userId);
+    const suggestions = Object.fromEntries(result);
+    res.success('Fetched',suggestions,200);
 }
