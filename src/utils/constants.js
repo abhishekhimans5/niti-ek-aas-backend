@@ -9,3 +9,4 @@ export const STATUS_CODE = {
 }
 
 export const SUGGESTION_LIMIT = 50;
+export const SUGEGSTION_INFO_LIMIT = 3;

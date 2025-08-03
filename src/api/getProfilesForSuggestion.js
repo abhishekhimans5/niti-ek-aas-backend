@@ -1,5 +1,5 @@
 import User from "../model/User.js";
-import { SUGGESTION_LIMIT } from "../utils/constants.js";
+import { SUGGESTION_LIMIT, SUGEGSTION_INFO_LIMIT } from "../utils/constants.js";
 
 export const getProfilesForSuggestion = async(idUser) => {
     let suggestionSet = new Map()
@@ -10,24 +10,23 @@ export const getProfilesForSuggestion = async(idUser) => {
         if(suggestedUsersIDs?.length > 0){
             for(const suggestedUserID of suggestedUsersIDs){
                 if(!followingUsers.includes(suggestedUserID)){
-                    let user = await getUserInfo(suggestedUserID);
-                    if(suggestionSet.size > 0 && suggestionSet.size < 3){
+                    let user = await getUserInfoById(suggestedUserID);
+                    if(suggestionSet.size > 0 && suggestionSet.size < SUGEGSTION_INFO_LIMIT){
                         if(suggestionSet.has(suggestedUserID)){
                            const existingEntry = suggestionSet.get(suggestedUserID);
                               const updatedEntry = {
                                 ...existingEntry,
-                                followedBy: [...existingEntry.followedBy, await getUserInfo(suggestedUserID)],
+                                followedBy: [...existingEntry.followedBy, await getUserInfoById(idUserFollowing)],
                                 followedByCount: existingEntry.followedBy.length + 1,
                             };
                               suggestionSet.set(suggestedUserID, updatedEntry);
-
                         }else{
                             suggestionSet.set(
                                 suggestedUserID,
                                 {
                                     user,
                                     followedBy : [
-                                        await getUserInfo(idUserFollowing)
+                                        await getUserInfoById(idUserFollowing)
                                     ],
                                     followedByCount : 1,
                                 }
@@ -35,7 +34,7 @@ export const getProfilesForSuggestion = async(idUser) => {
                         }
                         
                     }
-                    else if(suggestionSet.size >= 3){
+                    else if(suggestionSet.size >= SUGEGSTION_INFO_LIMIT){
 
                     }
                     else{
@@ -44,7 +43,7 @@ export const getProfilesForSuggestion = async(idUser) => {
                             {
                                 user,
                                 followedBy : [
-                                    await getUserInfo(idUserFollowing)
+                                    await getUserInfoById(idUserFollowing)
                                 ],
                                 followedByCount : 1,
                             }
@@ -66,22 +65,19 @@ export const getProfilesForSuggestion = async(idUser) => {
 
 export const getFollowingUsersById = async (userid) => {
     let followingUserIdArray = [];
-
     const user = await User.findById(userid);
-
     if(user){
         followingUserIdArray = user.following?.idFollowing.map(id => id.toString()) || [];
-        return followingUserIdArray;
     }
-
-    return [];
+    return followingUserIdArray;
 
 }
 
-const getUserInfo = async(userid) => {
+const getUserInfoById = async(userid) => {
     const user = await User.findById(userid);
+    let userInfo = {};
     if(user){
-        let userInfo = {
+        userInfo = {
             id : user._id,
             name : user.username,
             email : user.email,
@@ -89,8 +85,7 @@ const getUserInfo = async(userid) => {
             isVerified : user.isVerified,
             yearsOfExperience : user.years_of_experience
         }
-        return userInfo;
     }
-    return {};
+    return userInfo;
 }
 
